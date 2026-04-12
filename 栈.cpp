@@ -1,3 +1,4 @@
+//栈的初步应用
 /*#include<iostream>
 #include <stdexcept>
 
@@ -100,3 +101,33 @@ int main() {
 	return 0;
     
 }*/
+
+//STL实现栈
+
+#include<iostream>
+#include<stack>
+using namespace std;
+
+int main() {
+	std::stack<int>s;//建栈
+
+	s.push(11);//压栈
+	s.push(22);
+	s.push(33);
+
+	std::cout << "first is:" << s.top() << endl;
+
+	s.pop();//弹栈
+
+	std::cout << "first' is:" << s.top() << endl;//栈顶
+	std::cout << "size is:" << s.size() << endl;//大小
+	std::cout << "is empty?:" << (s.empty()?"yes":"no") << endl;//判断空
+
+	while (!s.empty()) {//遍历弹栈
+		std::cout << "ele is:" << s.top() << "\n";
+		s.pop();
+	}
+	std::cout << endl;
+	std::cout << "is empty?:" << (s.empty() ? "yes" : "no") << endl;
+	return 0;
+}
