@@ -256,3 +256,141 @@ int main() {
 
 }*/
 
+#include<iostream>
+#include<vector>
+#include<string>
+#include<stack>
+#include<sstream>
+#include<queue>
+using namespace std;
+
+struct treenode {
+	string val;
+	treenode* left;
+	treenode* right;
+	treenode(string x):val(x),left(NULL),right(NULL){}
+};
+
+int idx = 0;
+treenode* create_before(vector<string>&s) {
+	if (idx >= s.size() || s[idx] == "#") {
+		idx++;
+		return NULL;
+	}
+	treenode* root = new treenode(s[idx]);
+	idx++;
+	root->left = create_before(s);
+	root->right = create_before(s);
+	return root;
+}
+
+treenode* create_level(vector<string>ss) {
+	if (ss.empty() || ss[0] == "#") {
+		return nullptr;
+	}
+	treenode* root = new treenode(ss[0]);
+	queue<treenode*>q;
+	q.push(root);
+	int i = 1;
+	while (!q.empty() && i <= ss.size()) {
+		treenode* cur = q.front();
+		q.pop();
+		if (i < ss.size() && ss[i] != "#") {
+			root->left = new treenode(ss[i]);
+			q.push(cur->left);
+		}
+		i++;
+		if (i < ss.size() && ss[i] != "#") {
+			root->right = new treenode(ss[i]);
+			q.push(cur->right);
+		}
+		i++;
+	}
+	return root;
+}
+
+void before(treenode* root) {
+	if (!root) {
+		return;
+	}
+	cout << root->val << " ";
+	before(root->left);
+	before(root->right);
+}
+
+void level(treenode* root) {
+	if (!root) {
+		return;
+	}
+	vector<pair<treenode*, int>>qq;
+	qq.push_back({ root,1 });
+	while (!qq.empty()) {
+		auto [cur, level] = qq.front();
+		qq.pop_back();
+		cout << "level:" << level << ":" << cur->val << endl;
+		if (cur->left) {
+			qq.push_back({ cur->left, level + 1 });
+			qq.push_back({ cur->right,level + 1 });
+		}
+	}
+}
+
+int deep(treenode* root) {
+	if (!root) {
+		return -1;
+	}
+	return max(deep(root->left), deep(root->right));
+}
+
+void de(treenode* root) {
+	if (!root) {
+		return;
+	}
+	de(root->left);
+	de(root->right);
+	delete root;
+}
+
+int main() {
+	vector<string>s;
+	vector<string>ss;
+	string s1, s2;
+	cout << "输入第一个树(前序创建)：" << endl;
+	getline(cin, s1);
+	stringstream s11(s1);
+	string token1;
+	while (s11 >> token1) {
+		s.push_back(token1);
+	}
+	idx = 0;
+	treenode* root1 = create_before(s);
+	cout << "前序遍历：";
+	before(root1);
+	cout << endl;
+	cout << "层序遍历：";
+	level(root1);
+	cout << endl;
+	cout << "深度：";
+	deep(root1);
+	cout << endl;
+	de(root1);
+	cout << "输入第二个树(层序创建):" << endl;
+	getline(cin, s2);
+	stringstream s22(s2);
+	string token2;
+	while (s22 >> token2) {
+		ss.push_back(token2);
+	}
+	treenode* root2 = create_level(ss);
+	cout << "前序遍历：";
+	before(root2);
+	cout << endl;
+	cout << "层序遍历：";
+	level(root2);
+	cout << endl;
+	cout << "深度：";
+	deep(root2);
+	cout << endl;
+	de(root2);
+	return 0;
+}
